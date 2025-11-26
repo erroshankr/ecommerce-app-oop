@@ -5,9 +5,18 @@ public class CartItemModel extends BaseEntity{
     private String sku;
     private int quantity;
     private double unitPrice;
+    private String cartId;
 
     public String getSku() {
         return sku;
+    }
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
     }
 
     public void setSku(String sku) {
