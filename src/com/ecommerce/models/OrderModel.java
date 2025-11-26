@@ -1,6 +1,5 @@
 package com.ecommerce.models;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderModel extends BaseEntity{
@@ -12,7 +11,6 @@ public class OrderModel extends BaseEntity{
     private double shipping;
     private double total;
     private OrderStatus orderStatus;
-    private LocalDateTime placedAt;
 
     public String getCustomerID() {
         return customerID;
@@ -60,14 +58,6 @@ public class OrderModel extends BaseEntity{
 
     public void setTotal(double total) {
         this.total = total;
-    }
-
-    public LocalDateTime getPlacedAt() {
-        return placedAt;
-    }
-
-    public void setPlacedAt(LocalDateTime placedAt) {
-        this.placedAt = placedAt;
     }
 
     public OrderStatus getOrderStatus() {
