@@ -1,5 +1,6 @@
 package com.ecommerce.repo.impl.csv;
 
+import com.ecommerce.exceptions.ProductAlreadyPresentException;
 import com.ecommerce.exceptions.ProductNotFoundException;
 import com.ecommerce.models.ProductModel;
 import com.ecommerce.repo.ProductRepository;
@@ -22,12 +23,12 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void addProduct(ProductModel p) throws IOException,ProductNotFoundException {
+    public void addProduct(ProductModel p) throws IOException,ProductAlreadyPresentException {
           List<ProductModel> list = findAll();
 
           for (ProductModel x :list){
               if(x.getSku().equalsIgnoreCase(p.getSku())){
-                  throw new ProductNotFoundException("Product with sku " + p.getSku() + " already exists");
+                  throw new ProductAlreadyPresentException("Product with sku " + p.getSku() + " already exists");
               }
           }
 

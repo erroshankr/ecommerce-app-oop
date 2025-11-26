@@ -1,5 +1,6 @@
 package com.ecommerce.repo;
 
+import com.ecommerce.exceptions.ProductAlreadyPresentException;
 import com.ecommerce.exceptions.ProductNotFoundException;
 import com.ecommerce.models.ProductModel;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public interface ProductRepository { //CRUD
 
-    void addProduct(ProductModel p) throws IOException, ProductNotFoundException;
+    void addProduct(ProductModel p) throws IOException, ProductAlreadyPresentException;
     ProductModel getProductBySku(String sku) throws IOException, ProductNotFoundException;
     ProductModel getProductById(String id) throws IOException, ProductNotFoundException;
     List<ProductModel> findAll() throws IOException;

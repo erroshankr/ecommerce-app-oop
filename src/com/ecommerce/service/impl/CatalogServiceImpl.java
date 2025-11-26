@@ -1,5 +1,6 @@
 package com.ecommerce.service.impl;
 
+import com.ecommerce.exceptions.ProductAlreadyPresentException;
 import com.ecommerce.exceptions.ProductNotFoundException;
 import com.ecommerce.models.ProductModel;
 import com.ecommerce.repo.ProductRepository;
@@ -28,9 +29,9 @@ public class CatalogServiceImpl implements CatalogService {
         } catch (IOException e) {
             e.printStackTrace();
             log.severe("IOException occurred, product not added " + e.getMessage());
-        } catch (ProductNotFoundException e) {
+        } catch (ProductAlreadyPresentException e) {
             e.printStackTrace();
-            log.severe("ProductNotFoundException occurred "  + e.getMessage());
+            log.severe("ProductAlreadyPresentException occurred "  + e.getMessage());
         }
         log.info("Product added successfully");
     }
