@@ -13,7 +13,6 @@ public class AppRunner {
     private final CustomerService customerService;
     private final CartService cartService;
     private final OrderService orderService;
-    private final InventoryService inventoryService;
 
     public AppRunner(CatalogService catalogService,
                CustomerService customerService,
@@ -23,7 +22,6 @@ public class AppRunner {
         this.customerService = customerService;
         this.cartService = cartService;
         this.orderService = orderService;
-        this.inventoryService = inventoryService;
     }
 
     public void run() {

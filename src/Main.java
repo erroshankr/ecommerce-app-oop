@@ -20,7 +20,6 @@ public class Main {
       CartItemRepository cartItemRepository = new CartItemCsvRepositoryImpl(dataDir.resolve("cart_items.csv"));
       OrderItemRepository orderItemRepository = new OrderItemCsvRepositoryImpl(dataDir.resolve("order_items.csv"));
       OrderRepository orderRepository = new OrderCsvRepositoryImpl(dataDir.resolve("order.csv"));
-      InventoryRecordRepository inventoryRecordRepository = new InventoryRecordCsvRepositoryImpl(dataDir.resolve("inventory.csv"));
 
       //setup all services
       CatalogService  catalogService = new CatalogServiceImpl(productRepository);
