@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public class OrderCsvRepositoryImpl implements OrderRepository {
     private final Path csvpath;
-    private final String HEADER = "id,name,phone,email,address";
+    private final String HEADER = "orderId,customerId,subtotal,taxes,shipping,total,status";
 
     public OrderCsvRepositoryImpl(Path csvpath) {
         this.csvpath = csvpath;

@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public class CartItemCsvRepositoryImpl implements CartItemRepository {
     private final Path csvpath;
-    private final String HEADER = "id,name,phone,email,address";
+    private final String HEADER = "cartItemId,orderId,sku,quantity,unitPrice";
 
     public CartItemCsvRepositoryImpl(Path csvpath) {
         this.csvpath = csvpath;
