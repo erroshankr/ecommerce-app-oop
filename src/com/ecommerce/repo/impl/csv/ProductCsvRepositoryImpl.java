@@ -32,6 +32,7 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
           }
 
           list.add(p);
+          ensureHeaderInFile();
           writeAll(list);
     }
 
@@ -127,6 +128,7 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
 
     private void writeAll(List<ProductModel> list) throws IOException {
 
+        ensureHeaderInFile();
         BufferedWriter bw = Files.newBufferedWriter(csvpath);
         bw.write(HEADER);
         bw.newLine();
