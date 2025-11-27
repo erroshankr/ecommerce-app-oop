@@ -23,9 +23,11 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public void addProduct(ProductModel p) {
+    public boolean addProduct(ProductModel p) {
         try {
             productRepository.addProduct(p);
+            log.info("Product added successfully");
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             log.severe("IOException occurred, product not added " + e.getMessage());
@@ -33,7 +35,7 @@ public class CatalogServiceImpl implements CatalogService {
             e.printStackTrace();
             log.severe("ProductAlreadyPresentException occurred "  + e.getMessage());
         }
-        log.info("Product added successfully");
+        return false;
     }
 
     @Override
@@ -70,38 +72,45 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public void updateProduct(ProductModel p) {
+    public boolean updateProduct(ProductModel p) {
         try {
            productRepository.updateProduct(p);
+           log.info("Product updated successfully");
+           return true;
         } catch (IOException e) {
             log.severe("IOException occurred, product not found " + e.getMessage());
         } catch (ProductNotFoundException e) {
             log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
         }
+        return false;
     }
 
     @Override
-    public void removeProductById(String id) {
+    public boolean removeProductById(String id) {
         try {
             productRepository.removeProductById(id);
             log.info("Product removed successfully");
+            return true;
         } catch (IOException e) {
             log.severe("IOException occurred, product not found " + e.getMessage());
         } catch (ProductNotFoundException e) {
             log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
         }
+        return false;
     }
 
     @Override
-    public void removeProductBySku(String sku) {
+    public boolean removeProductBySku(String sku) {
         try {
             productRepository.removeProductBySku(sku);
             log.info("Product removed successfully");
+            return true;
         } catch (IOException e) {
             log.severe("IOException occurred, product not found " + e.getMessage());
         } catch (ProductNotFoundException e) {
             log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
         }
+        return false;
     }
 
     @Override

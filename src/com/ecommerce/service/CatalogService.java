@@ -6,14 +6,14 @@ import java.util.List;
 
 public interface CatalogService {
 
-    void addProduct(ProductModel p);
+    boolean addProduct(ProductModel p);
     ProductModel findBySku(String sku);
     List<ProductModel> search(String q);
     List<ProductModel> findAll();
     ProductModel findById(String id);
-    void updateProduct(ProductModel p);
-    void removeProductById(String id);
-    void removeProductBySku(String sku);
+    boolean updateProduct(ProductModel p);
+    boolean removeProductById(String id);
+    boolean removeProductBySku(String sku);
 
     boolean isStockPresent(String sku,  int quantity);
 }

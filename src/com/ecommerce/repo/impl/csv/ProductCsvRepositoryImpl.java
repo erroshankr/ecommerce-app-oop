@@ -28,8 +28,12 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
 
           for (ProductModel x :list){
               if(x.getSku().equalsIgnoreCase(p.getSku())){
-                  throw new ProductAlreadyPresentException("Product with sku " + p.getSku() + " already exists");
                   // generates forceful exception
+                  throw new ProductAlreadyPresentException("Product with sku " + p.getSku() + " already exists");
+              }
+              if(x.getId().equalsIgnoreCase(p.getId())){
+                  // generates forceful exception
+                  throw new ProductAlreadyPresentException("Product with ID " + p.getId() + " already exists");
               }
           }
 

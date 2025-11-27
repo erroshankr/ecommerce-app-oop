@@ -15,6 +15,10 @@ public class ProductHandler {
 
     // add-product — prompts for SKU, name, category, price, quantity
     public void handleAddProduct(Scanner scanner) throws Exception {
+
+        System.out.print("ID: ");
+        String id = scanner.nextLine().trim();
+
         System.out.print("SKU: ");
         String sku = scanner.nextLine().trim();
 
@@ -31,15 +35,21 @@ public class ProductHandler {
         int qty = Integer.parseInt(scanner.nextLine().trim());
 
         ProductModel p = new ProductModel();
+        p.setId(id);
         p.setSku(sku);
         p.setName(name);
         p.setCategory(category);
         p.setPrice(price);
         p.setAvailableQuantity(qty);
 
-        catalogService.addProduct(p);
+        boolean res = catalogService.addProduct(p);
 
-        System.out.println("Product added.");
+        if(res) {
+            System.out.println("Product added.");
+        }
+        else {
+            System.out.println("Product not added.");
+        }
     }
 
     // list-products — show all products
@@ -68,6 +78,7 @@ public class ProductHandler {
     }
 
     public void handleFindProductById(Scanner sc) throws Exception {
+        System.out.print("Enter product ID: ");
         String id = sc.nextLine().trim();
         ProductModel p = catalogService.findById(id);
 
@@ -76,6 +87,7 @@ public class ProductHandler {
             return;
         }
 
+        System.out.println();
         System.out.println("ID    | SKU    | Name                 | Category     | Price   | Qty");
         System.out.println("---------------------------------------------------------------");
         System.out.printf("%-6s |%-6s | %-20s | %-11s | %7.2f | %4d%n",
@@ -88,14 +100,16 @@ public class ProductHandler {
     }
 
     public void handleFindProductBySku(Scanner sc) throws Exception {
+        System.out.print("Enter product SKU: ");
         String sku = sc.nextLine().trim();
         ProductModel p = catalogService.findBySku(sku);
 
         if (p == null) {
-            System.out.println("No products found with id: " + sku);
+            System.out.println("No products found with sky: " + sku);
             return;
         }
 
+        System.out.println();
         System.out.println("ID    | SKU    | Name                 | Category     | Price   | Qty");
         System.out.println("---------------------------------------------------------------");
         System.out.printf("%-6s |%-6s | %-20s | %-11s | %7.2f | %4d%n",
@@ -113,13 +127,14 @@ public class ProductHandler {
         System.out.print("Enter sku to update: ");
         String sku = sc.nextLine().trim();
 
+
         ProductModel p = catalogService.findBySku(sku);
         if(p == null){
             System.out.println("No products found with sku: " + sku);
             return;
         }
 
-        System.out.print("\n ");
+        System.out.println();
         System.out.print("Name: ");
         String name = sc.nextLine().trim();
 
@@ -138,41 +153,63 @@ public class ProductHandler {
         p.setPrice(price);
         p.setAvailableQuantity(qty);
 
-        catalogService.updateProduct(p);
-        System.out.println("Product with sku: " + sku + " updated successfully");
+        boolean res = catalogService.updateProduct(p);
+        if(res) {
+            System.out.println("Product with sku: " + sku + " updated successfully");
+        }
+        else {
+            System.out.println("Product not updated.");
+        }
     }
 
     public void handleProductDeletionBySku(Scanner sc) throws Exception {
+        System.out.print("Enter sku to delete: ");
         String sku = sc.nextLine().trim();
+
         ProductModel p = catalogService.findBySku(sku);
         if (p == null) {
             System.out.println("No products found with sku: " + sku);
             return;
         }
-        catalogService.removeProductBySku(sku);
-        System.out.println("Product with SKU: " + sku + " has been deleted.");
+        boolean res = catalogService.removeProductBySku(sku);
+        if(res) {
+            System.out.println("Product with SKU: " + sku + " has been deleted.");
+        }else{
+            System.out.println("Product not deleted.");
+        }
     }
 
     public void handleProductDeletionById(Scanner sc) throws Exception {
+        System.out.print("Enter ID to remove: ");
         String id = sc.nextLine().trim();
+
         ProductModel p = catalogService.findById(id);
         if (p == null) {
             System.out.println("No products found with id: " + id);
             return;
         }
 
-        catalogService.removeProductById(id);
-        System.out.println("Product with ID: " + id + " has been deleted.");
+        boolean res = catalogService.removeProductById(id);
+        if(res) {
+            System.out.println("Product with ID: " + id + " has been deleted.");
+        }else{
+            System.out.println("Product not deleted.");
+        }
     }
 
     public void handleAvailableStock(Scanner sc) throws Exception {
-        System.out.println("Enter SKU");
+        System.out.print("Enter SKU: ");
         String sku = sc.nextLine().trim();
-        System.out.println("Enter Quantity");
+
+        System.out.print("Enter Quantity: ");
         int quantity = Integer.parseInt(sc.nextLine().trim());
 
         boolean res = catalogService.isStockPresent(sku, quantity);
-        System.out.println("Stock present: " + res);
+        if(res) {
+            System.out.println("Stock is available of sku: " + sku + " for quantity: " + quantity);
+        }else{
+            System.out.println("Stock is not available of sku: " + sku + " for quantity: " + quantity);
+        }
     }
 
 }
