@@ -29,6 +29,7 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
           for (ProductModel x :list){
               if(x.getSku().equalsIgnoreCase(p.getSku())){
                   throw new ProductAlreadyPresentException("Product with sku " + p.getSku() + " already exists");
+                  // generates forceful exception
               }
           }
 
@@ -84,6 +85,7 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
             if(x.getSku().equalsIgnoreCase(sku)){
                 isRemoved = true;
                 list.remove(x);
+                break;
             }
         }
         if(!isRemoved){
@@ -100,6 +102,7 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
             if(x.getId().equalsIgnoreCase(id)){
                 isRemoved = true;
                 list.remove(x);
+                break;
             }
         }
         if(!isRemoved){
@@ -112,16 +115,21 @@ public class ProductCsvRepositoryImpl implements ProductRepository {
     public void updateProduct(ProductModel p) throws IOException,ProductNotFoundException{
         List<ProductModel> list = findAll();
         boolean isFound = false;
-        for (ProductModel x :list){
+        for (int i = 0; i < list.size(); i++) {
+            ProductModel x = (ProductModel) list.get(i);
             if(x.getSku().equalsIgnoreCase(p.getSku())){
                isFound = true;
+               x.setName(p.getName());
+               x.setCategory(p.getCategory());
+               x.setPrice(p.getPrice());
+               x.setAvailableQuantity(p.getAvailableQuantity());
+               list.set(i, x);
             }
         }
 
         if(!isFound){
             throw new ProductNotFoundException("Product with sku " + p.getSku() + " not found for update");
         }
-
         writeAll(list);
     }
 

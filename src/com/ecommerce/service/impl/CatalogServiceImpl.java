@@ -51,6 +51,79 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    public ProductModel findById(String id) {
+        ProductModel p = null;
+        try {
+            p = productRepository.getProductById(id);
+            if(p != null) {
+                log.info("Product found ");
+            }else{
+                log.info("Product not found");
+                throw new ProductNotFoundException("Product not found with id " + id);
+            }
+        } catch (IOException e) {
+            log.severe("IOException occurred, product not found " + e.getMessage());
+        } catch (ProductNotFoundException e) {
+            log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
+        }
+        return p;
+    }
+
+    @Override
+    public void updateProduct(ProductModel p) {
+        try {
+           productRepository.updateProduct(p);
+        } catch (IOException e) {
+            log.severe("IOException occurred, product not found " + e.getMessage());
+        } catch (ProductNotFoundException e) {
+            log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeProductById(String id) {
+        try {
+            productRepository.removeProductById(id);
+            log.info("Product removed successfully");
+        } catch (IOException e) {
+            log.severe("IOException occurred, product not found " + e.getMessage());
+        } catch (ProductNotFoundException e) {
+            log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void removeProductBySku(String sku) {
+        try {
+            productRepository.removeProductBySku(sku);
+            log.info("Product removed successfully");
+        } catch (IOException e) {
+            log.severe("IOException occurred, product not found " + e.getMessage());
+        } catch (ProductNotFoundException e) {
+            log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isStockPresent(String sku, int quantity) {
+        try {
+            ProductModel p = productRepository.getProductBySku(sku);
+            if(p == null){
+                throw new ProductNotFoundException("Product not found with id " + sku);
+            }
+            if(p.getAvailableQuantity() >= quantity){
+                log.info("Enough stock present for the product with sku: " + sku);
+                return true;
+            }
+        } catch (IOException e) {
+            log.severe("IOException occurred, product not found " + e.getMessage());
+        } catch (ProductNotFoundException e) {
+            log.severe("ProductNotFoundException occurred, product not found " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
     public List<ProductModel> search(String q) {
         List<ProductModel> products = null;
         boolean isFound = false;
@@ -87,4 +160,5 @@ public class CatalogServiceImpl implements CatalogService {
             throw new RuntimeException(e);
         }
     }
+
 }

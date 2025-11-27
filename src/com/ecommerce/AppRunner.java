@@ -1,8 +1,15 @@
 package com.ecommerce;
 
 import com.ecommerce.exceptions.EcommerceException;
-import com.ecommerce.models.*;
-import com.ecommerce.service.*;
+import com.ecommerce.handler.ProductHandler;
+import com.ecommerce.models.CartItemModel;
+import com.ecommerce.models.CartModel;
+import com.ecommerce.models.CustomerModel;
+import com.ecommerce.models.OrderModel;
+import com.ecommerce.service.CartService;
+import com.ecommerce.service.CatalogService;
+import com.ecommerce.service.CustomerService;
+import com.ecommerce.service.OrderService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -13,15 +20,17 @@ public class AppRunner {
     private final CustomerService customerService;
     private final CartService cartService;
     private final OrderService orderService;
+    private final ProductHandler productHandler;
 
     public AppRunner(CatalogService catalogService,
-               CustomerService customerService,
-               CartService cartService,
-               OrderService orderService, InventoryService inventoryService) {
+                     CustomerService customerService,
+                     CartService cartService,
+                     OrderService orderService, ProductHandler productHandler) {
         this.catalogService = catalogService;
         this.customerService = customerService;
         this.cartService = cartService;
         this.orderService = orderService;
+        this.productHandler = productHandler;
     }
 
     public void run() {
@@ -35,29 +44,33 @@ public class AppRunner {
             String command = scanner.nextLine().trim();
 
             try {
-                if (command.equalsIgnoreCase("help")) {
-                    printHelp();
-                } else if (command.equalsIgnoreCase("add-product")) {
-                    handleAddProduct(scanner);
-                } else if (command.equalsIgnoreCase("list-products")) {
-                    handleListProducts();
-                } else if (command.equalsIgnoreCase("register-customer")) {
-                    handleRegisterCustomer(scanner);
-                } else if (command.equalsIgnoreCase("add-to-cart")) {
-                    handleAddToCart(scanner);
-                } else if (command.equalsIgnoreCase("view-cart")) {
-                    handleViewCart(scanner);
-                } else if (command.equalsIgnoreCase("checkout")) {
-                    handleCheckout(scanner);
-                } else if (command.equalsIgnoreCase("cancel-order")) {
-                    handleCancelOrder(scanner);
-                } else if (command.startsWith("orders")) {
-                    handleOrdersForCustomer(scanner, command);
-                } else if (command.equalsIgnoreCase("exit") ||
-                        command.equalsIgnoreCase("quit")) {
-                    running = false;
-                } else {
-                    System.out.println("Unknown command. Type 'help' for list.");
+                // Normalize the command to lowercase to simulate 'equalsIgnoreCase'
+                String normalizedCommand = command.trim().toLowerCase();
+
+                switch (normalizedCommand) {
+                    case "help" -> printHelp();
+                    case "add-product" -> productHandler.handleAddProduct(scanner);
+                    case "list-products" -> productHandler.handleListProducts();
+                    case "find-productbyid" -> productHandler.handleFindProductById(scanner);
+                    case "find-productbysku" -> productHandler.handleFindProductBySku(scanner);
+                    case "update-productbysku" -> productHandler.handleUpdateProductBySku(scanner);
+                    case "delete-productbyid" -> productHandler.handleProductDeletionById(scanner);
+                    case "delete-productbysku" -> productHandler.handleProductDeletionBySku(scanner);
+                    case "check-stock" -> productHandler.handleAvailableStock(scanner);
+                    case "register-customer" -> handleRegisterCustomer(scanner);
+                    case "add-to-cart" -> handleAddToCart(scanner);
+                    case "view-cart" -> handleViewCart(scanner);
+                    case "checkout" -> handleCheckout(scanner);
+                    case "cancel-order" -> handleCancelOrder(scanner);
+                    case "exit", "quit" -> running = false;
+                    default -> {
+                        // Handle the 'startsWith' logic here because switch requires exact matches
+                        if (normalizedCommand.startsWith("orders")) {
+                            handleOrdersForCustomer(scanner, command);
+                        } else {
+                            System.out.println("Unknown command. Type 'help' for list.");
+                        }
+                    }
                 }
             } catch (EcommerceException e) {
                 System.out.println("Business error: " + e.getMessage());
@@ -72,72 +85,26 @@ public class AppRunner {
 
     private void printHelp() {
         System.out.println("Commands:");
-        System.out.println("  add-product       - add a new product");
-        System.out.println("  list-products     - list all products");
-        System.out.println("  register-customer - register a new customer");
-        System.out.println("  add-to-cart       - add item to customer cart");
-        System.out.println("  view-cart         - view customer cart");
-        System.out.println("  checkout          - checkout cart and create order");
-        System.out.println("  cancel-order      - cancel an order");
-        System.out.println("  orders            - list orders for a customer");
-        System.out.println("  help              - show this help");
-        System.out.println("  exit / quit       - exit application");
+        System.out.println("  add-product         - add a new product");
+        System.out.println("  list-products       - list all products");
+        System.out.println("  find-productById    - find product by Id");
+        System.out.println("  find-productBySku   - find product by Sku");
+        System.out.println("  update-productBySku - update product by Sku");
+        System.out.println("  delete-productById  - delete product by Id");
+        System.out.println("  delete-productBySku - delete product by Sku");
+        System.out.println("  check-stock         - check stock");
+        System.out.println("  register-customer   - register a new customer");
+        System.out.println("  add-to-cart         - add item to customer cart");
+        System.out.println("  view-cart           - view customer cart");
+        System.out.println("  checkout            - checkout cart and create order");
+        System.out.println("  cancel-order        - cancel an order");
+        System.out.println("  orders              - list orders for a customer");
+        System.out.println("  help                - show this help");
+        System.out.println("  exit / quit         - exit application");
     }
 
     // ----------------- COMMAND HANDLERS -----------------
 
-    // add-product — prompts for SKU, name, category, price, quantity
-    private void handleAddProduct(Scanner scanner) throws Exception {
-        System.out.print("SKU: ");
-        String sku = scanner.nextLine().trim();
-
-        System.out.print("Name: ");
-        String name = scanner.nextLine().trim();
-
-        System.out.print("Category: ");
-        String category = scanner.nextLine().trim();
-
-        System.out.print("Price: ");
-        double price = Double.parseDouble(scanner.nextLine().trim());
-
-        System.out.print("Available Quantity: ");
-        int qty = Integer.parseInt(scanner.nextLine().trim());
-
-        ProductModel p = new ProductModel();
-        p.setSku(sku);
-        p.setName(name);
-        p.setCategory(category);
-        p.setPrice(price);
-        p.setAvailableQuantity(qty);
-
-        catalogService.addProduct(p);
-
-        System.out.println("Product added.");
-    }
-
-    // list-products — show all products
-    private void handleListProducts() throws Exception {
-        List<ProductModel> products = catalogService.findAll();
-
-        if (products.isEmpty()) {
-            System.out.println("No products.");
-            return;
-        }
-
-        System.out.println("SKU    | Name                 | Category     | Price   | Qty");
-        System.out.println("---------------------------------------------------------------");
-
-        int i;
-        for (i = 0; i < products.size(); i++) {
-            ProductModel p = products.get(i);
-            System.out.printf("%-6s | %-20s | %-11s | %7.2f | %4d%n",
-                    p.getSku(),
-                    p.getName(),
-                    p.getCategory(),
-                    p.getPrice(),
-                    p.getAvailableQuantity());
-        }
-    }
 
     // register-customer — prompts for customer details
     private void handleRegisterCustomer(Scanner scanner) throws Exception {

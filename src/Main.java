@@ -1,4 +1,5 @@
 import com.ecommerce.AppRunner;
+import com.ecommerce.handler.ProductHandler;
 import com.ecommerce.repo.*;
 import com.ecommerce.repo.impl.csv.*;
 import com.ecommerce.service.*;
@@ -28,12 +29,16 @@ public class Main {
       CustomerService customerService = new CustomerServiceImpl();
       OrderService orderService = new OrderServiceImpl();
 
-
+      ProductHandler productHandler = new ProductHandler(catalogService);
         //Since main will interact with services only, so pass all services
       AppRunner app = new AppRunner(catalogService,
               customerService,cartService,
-              orderService,inventoryService);
+              orderService,productHandler);
 
       app.run();
     }
 }
+
+// main -> service -> repo,model,util,strategy
+// repo -> model
+// MVC -> controller -> service-> repo-> model
