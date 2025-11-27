@@ -1,5 +1,4 @@
 id,sku,name,category,price,availableQuantity
 3,P003,Juice Bottle,Glassware,150.0,100
-P003,test,test,test,123.0,345
 1,P001,Iphone,Electronics,1500.0,10
 2,P002,One-Plus,Electronics,1200.0,11
